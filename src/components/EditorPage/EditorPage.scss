@@ -1,0 +1,124 @@
+$editor-color: rgba(64, 242, 255, 0.527);
+$border-color: rgb(255, 137, 182);
+$font-color: rgb(194, 36, 102);
+$headers-size: 35px;
+$font-size: 30px;
+#editorPage{
+    display         : flex;
+    flex-direction  : row;
+    flex-wrap       : nowrap;
+    width           : 100%;
+    height          : 100%;
+}
+#left-panel,#right-panel{
+    flex-grow: 1;
+}
+#editor{
+    display     : flex;
+    position    : relative;
+    align-items : center;
+    .header{
+        position: absolute;
+        top     : 0;
+    }
+}
+.container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+$toolBoxSize:40px;
+$c:#F87DA9;
+#tools{
+    flex-direction: column;
+    width: $toolBoxSize;
+    gap: 5px;
+    padding: 0 7px;
+    .tool{
+        $toolBackColor:rgb(247, 134, 153);
+        height: $toolBoxSize;
+        width: $toolBoxSize;
+        background-color:$toolBackColor;
+        border: {
+            radius: 6px;
+            border-style: solid; 
+        };
+        background-size: contain;
+        box-sizing: border-box;
+        &:hover{
+            border: 2px solid adjust-color($color: $toolBackColor, $hue: 0, $saturation: 0%, $lightness: -10%, $alpha: 1.0);
+        }
+    }
+}
+$colorBoxSize:25px;
+
+#colorPanel{
+    top: 100px;
+    height: auto;
+    position: absolute;
+    justify-content: center;
+    gap: 3px;
+    .colorBtnsContainer{
+        width: $colorBoxSize;
+        height: $colorBoxSize;
+        background-color: white;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+        &:hover .color[data-checked=false]{
+            transform: scale(1.3);
+        }
+        border-radius: 3px;
+    }
+    .color{
+        width: calc($colorBoxSize / 2);
+        height: calc($colorBoxSize / 2);
+        transition: .1s;
+        border-radius: 50%;
+    }
+    .selected{
+        transform: scale(3)
+    }
+}
+
+
+
+.editor-segment{
+    background-color: $editor-color;
+    box-sizing      : border-box;
+    font: {
+        size    : $font-size;
+        color   : $font-color;
+    }
+    border: {
+        color   : $border-color;
+        width   : 0 1px;
+    };
+    border-style: solid
+    
+     
+}
+.header{
+    // font-family: Century Gothic, Arial;
+    padding: {
+        left: 30px;
+    };
+    border-bottom: 2px solid $border-color;
+    height: 80px;
+    width: 100%;
+    svg {
+        height: $headers-size;
+    }
+    text {
+        fill            : white;
+        font            : {
+            size        : $headers-size;
+            weight      : 700;
+        } 
+        stroke          : adjust-color($color: $font-color, $hue: 0, $saturation: 20%, $lightness: 30%, $alpha: 1.0);
+        stroke-width    : 1px;
+        stroke-linejoin : round;
+    }
+}

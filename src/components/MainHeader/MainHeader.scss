@@ -1,0 +1,45 @@
+
+.component-main-header{
+    height: 75px;
+    background-color: #f06060e5
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+.headerContainer{
+    height: 100%;
+    box-sizing: border-box;
+    // border: 1px solid black;
+    align-items: center;
+    margin: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    .container{
+        display: flex;
+        height: 100%;
+        justify-self: flex-end;
+        align-items: center;
+    }
+}
+.header-button{
+    width: 100px;
+    height: auto;
+    box-sizing: border-box;
+    cursor: pointer;
+    // border: 1px solid black;
+}
+#Logo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
+    height: calc(100% - 5%);
+    width: auto;
+    font-size: 35px;
+    font-weight: 900;
+    img{
+        height: 100%;
+        border-radius: 10px;
+    }
+}
