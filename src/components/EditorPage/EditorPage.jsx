@@ -5,7 +5,9 @@ import { Route, Routes } from 'react-router-dom';
 import './EditorPage.scss'
 import penPic from '../../img/edit.png'
 import eraserPic from '../../img/eraser.png'
+import fillPic from '../../img/bucket.png'
 import Cube from 'js/classes/geometry/Cube';
+import { Point } from 'js/classes/geometry/Point';
 
 export default class EditorPage extends Component {
   render() {
@@ -109,7 +111,7 @@ class ToolPanel extends Component{
       details:details
     })
   }
-  penAction=(data)=>{
+  penAction     = (data)=> {
     if(editorReady()){
       if(data.cube instanceof Cube){
         let brush = this.ToolSet.pen.settings.getSetting("brushSize")
@@ -126,7 +128,7 @@ class ToolPanel extends Component{
       }
     }
   }
-  eraserAction = (data)=>{
+  eraserAction  = (data)=> {
     if(editorReady()){
       data.tool.color = "white"
       if(data.cube instanceof Cube){
@@ -144,6 +146,27 @@ class ToolPanel extends Component{
       }
     }
   }
+  fillAction    = (data)=> {
+    let baseColor = data.cube.fill
+    function getFourConnectedPoly(x,y){
+      let poly = []
+      if(editor.inRangeOfArray(data.array,x-1,y))poly.push({cube:data.array[y][x-1],p: new Point(x-1,y)})
+      if(editor.inRangeOfArray(data.array,x,y-1))poly.push({cube:data.array[y-1][x],p: new Point(x,y-1)})
+      if(editor.inRangeOfArray(data.array,x+1,y))poly.push({cube:data.array[y][x+1],p: new Point(x+1,y)})
+      if(editor.inRangeOfArray(data.array,x,y+1))poly.push({cube:data.array[y+1][x],p: new Point(x,y+1)})
+      return poly
+    }
+    function fill(cube,startingPoint){
+      cube.fill = data.tool.color
+      let x = startingPoint.x,
+          y = startingPoint.y, 
+          poly = getFourConnectedPoly(x,y)
+      for (const side of poly) {
+        if(side.cube.fill === baseColor)fill(side.cube,side.p)
+      }
+    }
+    if(baseColor!==data.tool.color)fill(data.cube,data.arrayPos)
+  }
   ToolSet = {
     pen:{
       name:"pen",
@@ -153,7 +176,17 @@ class ToolPanel extends Component{
       color:ColorSet.black,
       settings:{
         brushSize:{type:"range",name:"brushSize",baseValue:1,details:{min:1,max:5}}
-      }
+      },
+      key:"p"
+    },
+    fill:{
+      name:"fill",
+      image: fillPic,
+      action:this.fillAction,
+      onSwitch:()=>{editor.cursor.cube.stroke = editor.curTool.color},
+      color:ColorSet.black,
+      settings:{},
+      key:"f"
     },
     eraser:{
       name:"eraser",
@@ -163,15 +196,17 @@ class ToolPanel extends Component{
       color:"white",
       settings:{
         eraserSize:{type:"range",name:"eraserSize",baseValue:1,details:{min:1,max:5}}
-      }
+      },
+      key:"e"
     }
   }
-
+  
   
   componentDidMount(){
     if(editorReady()){
       for (const key in this.ToolSet) {
         const tool = this.ToolSet[key]
+        console.log(`Adding ${tool.name}`);
         editor.AddTool(tool.name,tool.action,tool.onSwitch,tool.color)
         let settings = []
         for(const key in tool.settings){
@@ -182,6 +217,10 @@ class ToolPanel extends Component{
         tool.settings.getSetting = (name)=>{
           return tool.settings.find((a)=>a.name===name)
         }
+        tool.key = `Key${tool.key.toUpperCase()}`
+        window.addEventListener("keypress",(e)=>{
+          if(e.code === tool.key)this.setTool(tool)
+        })
       }
       this.setTool(this.ToolSet.pen)
     }
@@ -196,9 +235,12 @@ class ToolPanel extends Component{
     }
   }
   render(){
+    //Generating tool settings
     const toolSettings = {}
+    const tools = []
     for (const key in this.ToolSet) {
       const tool = this.ToolSet[key];
+      tools.push(<Tool tool={tool} key={tool.name}  ClickHandeler={this.setTool}></Tool>)
       if(Array.isArray(tool.settings)){
         const setArr = []
         tool.settings.forEach(setting => {
@@ -213,11 +255,13 @@ class ToolPanel extends Component{
       }
     }
     const renderArr = toolSettings[this.state.curTool.name]
+    //Generating tools
+    
+
     return(
       <div className='container' id='toolPanel'>
         <div style={{flexGrow:0}} className="container" id='tools'>
-          <Tool tool={this.ToolSet.pen}   ClickHandeler={this.setTool}></Tool>
-          <Tool tool={this.ToolSet.eraser}ClickHandeler={this.setTool} ></Tool>
+          {tools}
         </div>
         <div style={{flexGrow:1}}>
           {renderArr}
@@ -242,7 +286,6 @@ const ToolSetting = (props)=>{
       }
       return(
         <div className="ToolSetting">
-          {/* <label htmlFor={s.name}>{s.state.value}</label> */}
           <input name={s.name} type="range" min={s.details.min} max={s.details.max} onChange={handleChange} defaultValue={s.state.value} step="2"/>
         </div>
       )      
@@ -269,6 +312,7 @@ class ColorPanel extends Component {
       editor.curTool.color = color
       if(editor.curTool.name!=="eraser")editor.cursor.cube.stroke = color
       editor.GetTool("pen").color = color
+      editor.GetTool("fill").color = color
     }
   }
   

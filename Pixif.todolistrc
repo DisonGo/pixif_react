@@ -14,17 +14,28 @@
                   "content": "Key binding",
                   "id": 1651620134116,
                   "level": "success",
-                  "done": false
+                  "done": true
                 }
               },
               {
                 "key": 1651607933679,
-                "children": [],
+                "children": [
+                  {
+                    "key": 1651677015360,
+                    "children": [],
+                    "todo": {
+                      "content": "Show filling   area",
+                      "id": 1651677015360,
+                      "level": "secondary",
+                      "done": false
+                    }
+                  }
+                ],
                 "todo": {
                   "content": "Filling",
                   "id": 1651607892696,
                   "level": "default",
-                  "done": false
+                  "done": true
                 }
               },
               {
@@ -47,7 +58,7 @@
                       "content": "Brush size (squad or circle?)",
                       "id": 1651607892696,
                       "level": "default",
-                      "done": false
+                      "done": true
                     }
                   }
                 ],
@@ -68,7 +79,7 @@
                       "content": "Brush size (squad or circle?)",
                       "id": 1651607892696,
                       "level": "default",
-                      "done": false
+                      "done": true
                     }
                   }
                 ],
@@ -83,7 +94,7 @@
             "todo": {
               "content": "Tools",
               "id": 1651607833633,
-              "level": "warning",
+              "level": "secondary",
               "done": false
             }
           },
@@ -305,6 +316,16 @@
                   "level": "secondary",
                   "done": false
                 }
+              },
+              {
+                "key": 1651678312569,
+                "children": [],
+                "todo": {
+                  "content": "Ctrl+Z Ctrl+Y save system",
+                  "id": 1651678312569,
+                  "level": "success",
+                  "done": false
+                }
               }
             ],
             "todo": {
@@ -318,7 +339,7 @@
         "todo": {
           "content": "Editor",
           "id": 1651607795376,
-          "level": "danger",
+          "level": "warning",
           "done": false
         }
       },
@@ -448,14 +469,10 @@
       }
     ],
     "expandKeys": [
-      1651607795376,
-      1651607833633,
       1651609480906,
       1651607988867,
       1651608038244,
-      1651607933679,
       1651608219252,
-      1651608049416,
       1651608110666,
       1651608150613,
       1651608097039,
@@ -463,13 +480,11 @@
       1651609153045,
       1651608190737,
       1651609251583,
-      1651609308963,
       1651609369438,
       1651609460606,
       1651609412443,
       1651609438815,
       1651609643220,
-      1651608586391,
       1651608629186,
       1651608662746,
       1651608830534,
@@ -481,7 +496,13 @@
       1651609864703,
       1651609929875,
       1651609942340,
-      1651609955197
+      1651609955197,
+      1651620134116,
+      1651608549751,
+      1651607933679,
+      1651607872394,
+      1651607873728,
+      1651609308963
     ],
     "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
     "add_mode": "bottom",
