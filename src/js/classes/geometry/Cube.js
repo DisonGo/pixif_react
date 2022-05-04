@@ -9,9 +9,12 @@ class Cube extends EditorObject{
         this.svg = ctx.makeRectangle(cent.x,cent.y,size,size)
         this.svg.linewidth = 0
         this.svg.stroke = "cyan"
+        this._ctx = ctx
     }
-    ConfElem(){
-        this.elem = this.svg._renderer.elem
+    get elem(){
+        this._ctx.update()
+        this._elem = this.svg._renderer.elem
+        return this._elem
     }
     getCorners(){
         let C = this.center,

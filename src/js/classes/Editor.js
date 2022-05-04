@@ -31,9 +31,7 @@ function createCanvas(ctx) {
     ctx.height = parent.offsetWidth
     return ctx.renderer.domElement
 }
-function inRangeOfArray(arr,x, y) {
-    return (x < arr[0].length && x >= 0 && y < arr.length && y >= 0)
-}
+
 export class Editor {
     constructor(cubeSize = 20) {
         cSize = cubeSize
@@ -41,8 +39,6 @@ export class Editor {
         // Two.js sample 
         this.viewport = new Two(config)
 
-        
-        
         // DOM canvas for Events
         this.canvas = createCanvas(this.viewport)
         this.canvas.id = "canvas"
@@ -52,7 +48,17 @@ export class Editor {
             this.cursor.pressed = true
         })
         this.SetEvent("mouseup",(e)=>{this.cursor.pressed = false})
-        
+        this.SetEvent("mousemove",(e)=>{
+            let cursorP = this.CalcCursorPos(e)
+            this.cursor.cube.setCenter = cursorP
+            if(this.cursor.pressed){
+                let p = this.CalcArrayPos(e)
+                if(this.inRangeOfArray(this.cubes,p.x,p.y)){
+                    let cube = this.cubes[p.y][p.x] 
+                    cube.elem.dispatchEvent(click)
+                }
+            }
+        })
 
         // Layers
         this.bg = this.viewport.makeGroup()
@@ -69,26 +75,16 @@ export class Editor {
             cursorCube.svg.noFill()
             cursorCube.svg.linewidth = strokeWidth
             cursorCube.svg.stroke = "black"
-            cursorCube.flicking = setInterval(()=>{
-                if(!this.cursor.pressed){
-                    let s = cursorCube.stroke 
-                    s == "white"?cursorCube.stroke  = "black":cursorCube.stroke  = "white"
-                }
-            },800)
-
+            // cursorCube.flicking = setInterval(()=>{
+            //     if(!this.cursor.pressed){
+            //         let s = cursorCube.stroke 
+            //         s === "white"?cursorCube.stroke  = "black":cursorCube.stroke  = "white"
+            //     }
+            // },800)
+            
             this.cursor = new Cursor(0,0,cSize,cursorCube)
             this.UI.add(this.cursor.cube.svg)
-            this.SetEvent("mousemove",(e)=>{
-                let cursorP = this.CalcCursorPos(e)
-                this.cursor.cube.setCenter = cursorP
-                if(this.cursor.pressed){
-                    let p = this.CalcArrayPos(e)
-                    if(inRangeOfArray(this.cubes,p.x,p.y)){
-                        let cube = this.cubes[p.y][p.x] 
-                        cube.elem.dispatchEvent(click)
-                    }
-                }
-            })
+            cursorCube.elem.style.pointerEvents = "none";
         }
         //Tools
         this.tools = []
@@ -98,6 +94,9 @@ export class Editor {
         this.objects = []
         this.CreateCubeNet()
 
+    }
+    inRangeOfArray(arr,x, y) {
+        return (x < arr[0].length && x >= 0 && y < arr.length && y >= 0)
     }
     CalcCursorPos(e){
         let dx = e.clientX - this.canvas.getBoundingClientRect().x
@@ -121,7 +120,6 @@ export class Editor {
         } 
         let cubes = [];
         let newCubesRow = [];
-        let h = ((Size.h - Size.h % cSize) / cSize)
         let w = ((Size.w - Size.w % cSize) / cSize)
         
         for (let i = 0; i < w; i++) {
@@ -136,15 +134,16 @@ export class Editor {
         }
         this.cubes = cubes
         this.viewport.update()
-        this.cubes.forEach(cubes=>{
-            cubes.forEach(cube=>{
-                cube.ConfElem()
+        this.cubes.forEach((cubes,y)=>{
+            cubes.forEach((cube,x)=>{
                 cube.elem.addEventListener("touch",(e)=>{
                     this.curTool.action(e.detail)
                 })
                 cube.elem.addEventListener("click",(e)=>{
                     cube.elem.dispatchEvent(new CustomEvent("touch",{detail:{
                         cube:cube,
+                        array:this.cubes,
+                        arrayPos:new Point(x,y),                                                                                                   
                         tool:this.curTool
                     }}))
                 })
@@ -173,11 +172,17 @@ export class Editor {
         this.tools.push(new Tool(name,action,onSwitch,color))
     }
     SetTool(name){
-        let tool = this.tools.find((tool)=>tool.name==name)
-        typeof tool === 'undefined'?this.curTool=this.tools[0]:this.curTool = tool
+        let tool = this.tools.find((tool)=>tool.name===name)
+        if(typeof tool === 'undefined'){
+            this.curTool=this.tools[0]
+        }
+        else{
+            this.curTool = tool
+            this.curTool.onSwitch()
+        }
     }
     GetTool(name){
-        return this.tools.find((tool)=>tool.name==name)
+        return this.tools.find((tool)=>tool.name===name)
     }
     SetTick(obj, func) {
         obj.tick = func

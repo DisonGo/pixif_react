@@ -1,7 +1,6 @@
 import { Editor } from 'js/classes/Editor';
-import { Point } from 'js/classes/geometry/Point';
 import Size from 'js/preset/sizes';
-import React, {Component, forwardRef} from 'react';
+import React, {Component} from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './EditorPage.scss'
 import penPic from '../../img/edit.png'
@@ -84,18 +83,46 @@ class EditorSegment extends Component{
     )
   }
 }
+
 class ToolPanel extends Component{
   constructor(props){
     super(props)
     this.state = {
-      curTool:"pen"
+      curTool:this.ToolSet.pen,
+      states:{}
     }
-    
+  }
+  Setting = (type,name,baseValue,details)=>{
+    const states = this.state.states
+    states[name] = {
+      name:name,
+      value:baseValue,
+      setValue:(value)=>{
+        states[name].value = value
+        this.setState({states})
+      }
+    }
+    return({
+      type: type,
+      name: name,
+      state: states[name],
+      details:details
+    })
   }
   penAction=(data)=>{
     if(editorReady()){
       if(data.cube instanceof Cube){
-        data.cube.fill = data.tool.color
+        let brush = this.ToolSet.pen.settings.getSetting("brushSize")
+        let size = Math.floor(brush.state.value/2),
+            pX = data.arrayPos.x,
+            pY = data.arrayPos.y
+        for(let y = pY - size;y<=pY+size;y++){
+          for(let x = pX - size;x<=pX+size;x++){
+            if(editor.inRangeOfArray(data.array,x,y)){
+              data.array[y][x].fill = data.tool.color
+            }
+          }
+        }
       }
     }
   }
@@ -103,7 +130,17 @@ class ToolPanel extends Component{
     if(editorReady()){
       data.tool.color = "white"
       if(data.cube instanceof Cube){
-        data.cube.fill = data.tool.color
+        let brush = this.ToolSet.eraser.settings.getSetting("eraserSize")
+        let size = Math.floor(brush.state.value/2),
+            pX = data.arrayPos.x,
+            pY = data.arrayPos.y
+        for(let y = pY - size;y<=pY+size;y++){
+          for(let x = pX - size;x<=pX+size;x++){
+            if(editor.inRangeOfArray(data.array,x,y)){
+              data.array[y][x].fill = data.tool.color
+            }
+          }
+        }
       }
     }
   }
@@ -112,40 +149,79 @@ class ToolPanel extends Component{
       name:"pen",
       image: penPic,
       action:this.penAction,
-      color:ColorSet.black
+      onSwitch:()=>{editor.cursor.cube.stroke = editor.curTool.color},
+      color:ColorSet.black,
+      settings:{
+        brushSize:{type:"range",name:"brushSize",baseValue:1,details:{min:1,max:5}}
+      }
     },
     eraser:{
       name:"eraser",
       image: eraserPic,
       action:this.eraserAction,
-      color:"white"
+      onSwitch:()=>{editor.cursor.cube.stroke = "white"},
+      color:"white",
+      settings:{
+        eraserSize:{type:"range",name:"eraserSize",baseValue:1,details:{min:1,max:5}}
+      }
     }
   }
+
+  
   componentDidMount(){
     if(editorReady()){
       for (const key in this.ToolSet) {
         const tool = this.ToolSet[key]
-        editor.AddTool(tool.name,tool.action,null,tool.color)
+        editor.AddTool(tool.name,tool.action,tool.onSwitch,tool.color)
+        let settings = []
+        for(const key in tool.settings){
+          const set = tool.settings[key]
+          settings.push(this.Setting(set.type,set.name,set.baseValue,set.details))
+        }
+        tool.settings = settings
+        tool.settings.getSetting = (name)=>{
+          return tool.settings.find((a)=>a.name===name)
+        }
       }
       this.setTool(this.ToolSet.pen)
     }
+    this.setState({curTool:this.state.curTool})
   }
   setTool = (tool) =>{
     this.setState({
       curTool:tool
     })
     if(editorReady()){
-      editor.SetTool(tool.name)
+      editor.SetTool(tool.name) 
     }
   }
   render(){
+    const toolSettings = {}
+    for (const key in this.ToolSet) {
+      const tool = this.ToolSet[key];
+      if(Array.isArray(tool.settings)){
+        const setArr = []
+        tool.settings.forEach(setting => {
+          setArr.push(
+            <div key={setting.name}>
+              <label>{setting.name}:{this.state.states[setting.name].value}</label>
+              <ToolSetting setting={setting}></ToolSetting>
+            </div>
+          )
+        });
+        toolSettings[key] = setArr
+      }
+    }
+    const renderArr = toolSettings[this.state.curTool.name]
     return(
       <div className='container' id='toolPanel'>
         <div style={{flexGrow:0}} className="container" id='tools'>
           <Tool tool={this.ToolSet.pen}   ClickHandeler={this.setTool}></Tool>
           <Tool tool={this.ToolSet.eraser}ClickHandeler={this.setTool} ></Tool>
         </div>
-        <div style={{flexGrow:1}}>2</div>
+        <div style={{flexGrow:1}}>
+          {renderArr}
+        </div>
       </div>
     )  
   }
@@ -156,6 +232,25 @@ function Tool(props){
           style={{backgroundImage:`url(${props.tool.image})`}}
           onClick={()=>{props.ClickHandeler(props.tool)}}></div>
   )
+}
+const ToolSetting = (props)=>{
+  const s = props.setting
+  switch (s.type) {
+    case "range":
+      const handleChange = e => {
+        s.state.setValue(e.target.value)
+      }
+      return(
+        <div className="ToolSetting">
+          {/* <label htmlFor={s.name}>{s.state.value}</label> */}
+          <input name={s.name} type="range" min={s.details.min} max={s.details.max} onChange={handleChange} defaultValue={s.state.value} step="2"/>
+        </div>
+      )      
+    default:
+      return(
+        <div className="ToolSetting"></div>
+      );
+  }
 }
 class ColorPanel extends Component {
 
@@ -171,7 +266,8 @@ class ColorPanel extends Component {
       this.setState({
         selectedColor:color
       })
-      editor.curTool.color = color 
+      editor.curTool.color = color
+      if(editor.curTool.name!=="eraser")editor.cursor.cube.stroke = color
       editor.GetTool("pen").color = color
     }
   }
@@ -194,16 +290,14 @@ class ColorPanel extends Component {
 }
  
 class Color extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() { 
     const checked = this.props.checked
     return(
-      <span   className={`color ${checked?"selected":""}`}
-                          style={{backgroundColor:this.props.color}}
-                          data-checked={checked}
-                          onClick={()=>{this.props.ClickHandeler(this.props.color)}}></span>
+      <div className='container'  onClick={()=>{this.props.ClickHandeler(this.props.color)}}>
+        <div   className={`color ${checked?"selected":""}`}
+                style={{backgroundColor:this.props.color}}
+                data-checked={checked}></div>
+      </div>
     )
   }
 }

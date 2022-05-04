@@ -1,0 +1,490 @@
+{
+  "todotree": {
+    "tree": [
+      {
+        "key": 1651607795376,
+        "children": [
+          {
+            "key": 1651607833633,
+            "children": [
+              {
+                "key": 1651620134116,
+                "children": [],
+                "todo": {
+                  "content": "Key binding",
+                  "id": 1651620134116,
+                  "level": "success",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651607933679,
+                "children": [],
+                "todo": {
+                  "content": "Filling",
+                  "id": 1651607892696,
+                  "level": "default",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651609480906,
+                "children": [],
+                "todo": {
+                  "content": "Settings panel for each tool",
+                  "id": 1651609480906,
+                  "level": "success",
+                  "done": true
+                }
+              },
+              {
+                "key": 1651607892696,
+                "children": [
+                  {
+                    "key": 1651607988867,
+                    "children": [],
+                    "todo": {
+                      "content": "Brush size (squad or circle?)",
+                      "id": 1651607892696,
+                      "level": "default",
+                      "done": false
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Pen",
+                  "id": 1651607892696,
+                  "level": "default",
+                  "done": true
+                }
+              },
+              {
+                "key": 1651607931955,
+                "children": [
+                  {
+                    "key": 1651608038244,
+                    "children": [],
+                    "todo": {
+                      "content": "Brush size (squad or circle?)",
+                      "id": 1651607892696,
+                      "level": "default",
+                      "done": false
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Eraser",
+                  "id": 1651607892696,
+                  "level": "default",
+                  "done": true
+                }
+              }
+            ],
+            "todo": {
+              "content": "Tools",
+              "id": 1651607833633,
+              "level": "warning",
+              "done": false
+            }
+          },
+          {
+            "key": 1651607872394,
+            "children": [
+              {
+                "key": 1651608219252,
+                "children": [],
+                "todo": {
+                  "content": "New features",
+                  "id": 1651608219252,
+                  "level": "default",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651608049416,
+                "children": [
+                  {
+                    "key": 1651608110666,
+                    "children": [],
+                    "todo": {
+                      "content": "Custom color",
+                      "id": 1651608110666,
+                      "level": "default",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651608150613,
+                    "children": [],
+                    "todo": {
+                      "content": "Additional buttons for  custom colors",
+                      "id": 1651608150613,
+                      "level": "default",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651608097039,
+                    "children": [],
+                    "todo": {
+                      "content": "Standart Colors",
+                      "id": 1651608097039,
+                      "level": "default",
+                      "done": true
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Color panel",
+                  "id": 1651608049416,
+                  "level": "default",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651609065940,
+                "children": [
+                  {
+                    "key": 1651609153045,
+                    "children": [],
+                    "todo": {
+                      "content": "Autosave",
+                      "id": 1651609153045,
+                      "level": "secondary",
+                      "done": false
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Saving objects in cache preventing data losing",
+                  "id": 1651609065940,
+                  "level": "secondary",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651608190737,
+                "children": [],
+                "todo": {
+                  "content": "Editor element",
+                  "id": 1651608190737,
+                  "level": "default",
+                  "done": true
+                }
+              }
+            ],
+            "todo": {
+              "content": "Editor",
+              "id": 1651607833633,
+              "level": "warning",
+              "done": false
+            }
+          },
+          {
+            "key": 1651607873728,
+            "children": [
+              {
+                "key": 1651609251583,
+                "children": [],
+                "todo": {
+                  "content": "New art post form",
+                  "id": 1651609251583,
+                  "level": "success",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651609308963,
+                "children": [
+                  {
+                    "key": 1651609369438,
+                    "children": [],
+                    "todo": {
+                      "content": "Saving localy for all arts/ per art",
+                      "id": 1651609369438,
+                      "level": "default",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651609460606,
+                    "children": [],
+                    "todo": {
+                      "content": "Editor pixel net",
+                      "id": 1651609460606,
+                      "level": "default",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651609412443,
+                    "children": [],
+                    "todo": {
+                      "content": "Cursor flickering",
+                      "id": 1651609412443,
+                      "level": "secondary",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651609438815,
+                    "children": [],
+                    "todo": {
+                      "content": "Editor theme",
+                      "id": 1651609438815,
+                      "level": "secondary",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651609643220,
+                    "children": [],
+                    "todo": {
+                      "content": "Return to default",
+                      "id": 1651609643220,
+                      "level": "secondary",
+                      "done": false
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Settings list",
+                  "id": 1651609308963,
+                  "level": "default",
+                  "done": false
+                }
+              }
+            ],
+            "todo": {
+              "content": "Settings",
+              "id": 1651607833633,
+              "level": "warning",
+              "done": false
+            }
+          },
+          {
+            "key": 1651608549751,
+            "children": [
+              {
+                "key": 1651608586391,
+                "children": [
+                  {
+                    "key": 1651608629186,
+                    "children": [],
+                    "todo": {
+                      "content": "Saving Images (Imgur probably)",
+                      "id": 1651608629186,
+                      "level": "default",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651608662746,
+                    "children": [],
+                    "todo": {
+                      "content": "Saving arts(svg objects) - local server(mongoDB)",
+                      "id": 1651608662746,
+                      "level": "default",
+                      "done": false
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Saving arts",
+                  "id": 1651608586391,
+                  "level": "success",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651608830534,
+                "children": [],
+                "todo": {
+                  "content": "Design revamp",
+                  "id": 1651608830534,
+                  "level": "secondary",
+                  "done": false
+                }
+              }
+            ],
+            "todo": {
+              "content": "Overrall",
+              "id": 1651608549751,
+              "level": "success",
+              "done": false
+            }
+          }
+        ],
+        "todo": {
+          "content": "Editor",
+          "id": 1651607795376,
+          "level": "danger",
+          "done": false
+        }
+      },
+      {
+        "key": 1651608755419,
+        "children": [
+          {
+            "key": 1651608772526,
+            "children": [
+              {
+                "key": 1651608946008,
+                "children": [],
+                "todo": {
+                  "content": "Design",
+                  "id": 1651608946008,
+                  "level": "warning",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651608791346,
+                "children": [],
+                "todo": {
+                  "content": "Fetching images from DB => Imgur",
+                  "id": 1651608791346,
+                  "level": "secondary",
+                  "done": false
+                }
+              }
+            ],
+            "todo": {
+              "content": "Works list",
+              "id": 1651608772526,
+              "level": "warning",
+              "done": false
+            }
+          },
+          {
+            "key": 1651609723762,
+            "children": [],
+            "todo": {
+              "content": "User system?(idk binding by ip probably easier)",
+              "id": 1651609723762,
+              "level": "default",
+              "done": false
+            }
+          }
+        ],
+        "todo": {
+          "content": "Main page",
+          "id": 1651608755419,
+          "level": "danger",
+          "done": false
+        }
+      },
+      {
+        "key": 1651609908039,
+        "children": [
+          {
+            "key": 1651609929875,
+            "children": [],
+            "todo": {
+              "content": "Arts DB",
+              "id": 1651609929875,
+              "level": "default",
+              "done": false
+            }
+          },
+          {
+            "key": 1651609955197,
+            "children": [],
+            "todo": {
+              "content": "User / IP DB",
+              "id": 1651609955197,
+              "level": "default",
+              "done": false
+            }
+          },
+          {
+            "key": 1651609942340,
+            "children": [],
+            "todo": {
+              "content": "API",
+              "id": 1651609942340,
+              "level": "secondary",
+              "done": false
+            }
+          }
+        ],
+        "todo": {
+          "content": "Server side",
+          "id": 1651609908039,
+          "level": "success",
+          "done": false
+        }
+      },
+      {
+        "key": 1651609812329,
+        "children": [
+          {
+            "key": 1651609827096,
+            "children": [],
+            "todo": {
+              "content": "Research new frameworks for better workflow",
+              "id": 1651609827096,
+              "level": "secondary",
+              "done": false
+            }
+          },
+          {
+            "key": 1651609864703,
+            "children": [],
+            "todo": {
+              "content": "Switch to angular if React gets to chubby",
+              "id": 1651609864703,
+              "level": "secondary",
+              "done": false
+            }
+          }
+        ],
+        "todo": {
+          "content": "Maybe...",
+          "id": 1651609812329,
+          "level": "secondary",
+          "done": false
+        }
+      }
+    ],
+    "expandKeys": [
+      1651607795376,
+      1651607833633,
+      1651609480906,
+      1651607988867,
+      1651608038244,
+      1651607933679,
+      1651608219252,
+      1651608049416,
+      1651608110666,
+      1651608150613,
+      1651608097039,
+      1651609065940,
+      1651609153045,
+      1651608190737,
+      1651609251583,
+      1651609308963,
+      1651609369438,
+      1651609460606,
+      1651609412443,
+      1651609438815,
+      1651609643220,
+      1651608586391,
+      1651608629186,
+      1651608662746,
+      1651608830534,
+      1651608772526,
+      1651608946008,
+      1651608791346,
+      1651609723762,
+      1651609827096,
+      1651609864703,
+      1651609929875,
+      1651609942340,
+      1651609955197
+    ],
+    "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
+    "add_mode": "bottom",
+    "virtual": false
+  }
+}
