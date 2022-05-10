@@ -2,105 +2,94 @@
   "todotree": {
     "tree": [
       {
-        "key": 1651607795376,
+        "key": 1651608755419,
         "children": [
           {
-            "key": 1651607833633,
+            "key": 1651608772526,
             "children": [
               {
-                "key": 1651620134116,
+                "key": 1651608946008,
                 "children": [],
                 "todo": {
-                  "content": "Key binding",
-                  "id": 1651620134116,
-                  "level": "success",
-                  "done": true
+                  "content": "Design",
+                  "id": 1651608946008,
+                  "level": "warning",
+                  "done": false
                 }
               },
               {
-                "key": 1651607933679,
-                "children": [
-                  {
-                    "key": 1651677015360,
-                    "children": [],
-                    "todo": {
-                      "content": "Show filling   area",
-                      "id": 1651677015360,
-                      "level": "secondary",
-                      "done": false
-                    }
-                  }
-                ],
-                "todo": {
-                  "content": "Filling",
-                  "id": 1651607892696,
-                  "level": "default",
-                  "done": true
-                }
-              },
-              {
-                "key": 1651609480906,
+                "key": 1651608791346,
                 "children": [],
                 "todo": {
-                  "content": "Settings panel for each tool",
-                  "id": 1651609480906,
-                  "level": "success",
-                  "done": true
-                }
-              },
-              {
-                "key": 1651607892696,
-                "children": [
-                  {
-                    "key": 1651607988867,
-                    "children": [],
-                    "todo": {
-                      "content": "Brush size (squad or circle?)",
-                      "id": 1651607892696,
-                      "level": "default",
-                      "done": true
-                    }
-                  }
-                ],
-                "todo": {
-                  "content": "Pen",
-                  "id": 1651607892696,
-                  "level": "default",
-                  "done": true
-                }
-              },
-              {
-                "key": 1651607931955,
-                "children": [
-                  {
-                    "key": 1651608038244,
-                    "children": [],
-                    "todo": {
-                      "content": "Brush size (squad or circle?)",
-                      "id": 1651607892696,
-                      "level": "default",
-                      "done": true
-                    }
-                  }
-                ],
-                "todo": {
-                  "content": "Eraser",
-                  "id": 1651607892696,
-                  "level": "default",
-                  "done": true
+                  "content": "Fetching images from DB => Imgur",
+                  "id": 1651608791346,
+                  "level": "secondary",
+                  "done": false
                 }
               }
             ],
             "todo": {
-              "content": "Tools",
-              "id": 1651607833633,
-              "level": "secondary",
+              "content": "Works list",
+              "id": 1651608772526,
+              "level": "warning",
               "done": false
             }
           },
           {
+            "key": 1651609723762,
+            "children": [],
+            "todo": {
+              "content": "User system?(idk binding by ip probably easier)",
+              "id": 1651609723762,
+              "level": "default",
+              "done": false
+            }
+          }
+        ],
+        "todo": {
+          "content": "Main page",
+          "id": 1651608755419,
+          "level": "danger",
+          "done": false
+        }
+      },
+      {
+        "key": 1651607795376,
+        "children": [
+          {
             "key": 1651607872394,
             "children": [
+              {
+                "key": 1651686283611,
+                "children": [
+                  {
+                    "key": 1651686351780,
+                    "children": [],
+                    "todo": {
+                      "content": "After created",
+                      "id": 1651686351780,
+                      "level": "warning",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651686349951,
+                    "children": [],
+                    "todo": {
+                      "content": "Before created",
+                      "id": 1651686349951,
+                      "level": "warning",
+                      "done": true
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Canvas size presetter",
+                  "id": 1651686283611,
+                  "level": "warning",
+                  "done": false
+                }
+              },
               {
                 "key": 1651608219252,
                 "children": [],
@@ -308,22 +297,22 @@
                 }
               },
               {
-                "key": 1651608830534,
-                "children": [],
-                "todo": {
-                  "content": "Design revamp",
-                  "id": 1651608830534,
-                  "level": "secondary",
-                  "done": false
-                }
-              },
-              {
                 "key": 1651678312569,
                 "children": [],
                 "todo": {
                   "content": "Ctrl+Z Ctrl+Y save system",
                   "id": 1651678312569,
                   "level": "success",
+                  "done": false
+                }
+              },
+              {
+                "key": 1651608830534,
+                "children": [],
+                "todo": {
+                  "content": "Design revamp",
+                  "id": 1651608830534,
+                  "level": "secondary",
                   "done": false
                 }
               }
@@ -334,64 +323,126 @@
               "level": "success",
               "done": false
             }
-          }
-        ],
-        "todo": {
-          "content": "Editor",
-          "id": 1651607795376,
-          "level": "warning",
-          "done": false
-        }
-      },
-      {
-        "key": 1651608755419,
-        "children": [
+          },
           {
-            "key": 1651608772526,
+            "key": 1651607833633,
             "children": [
               {
-                "key": 1651608946008,
-                "children": [],
+                "key": 1651607933679,
+                "children": [
+                  {
+                    "key": 1651686182815,
+                    "children": [],
+                    "todo": {
+                      "content": "Hardness setting",
+                      "id": 1651686182815,
+                      "level": "default",
+                      "done": false
+                    }
+                  },
+                  {
+                    "key": 1651677015360,
+                    "children": [],
+                    "todo": {
+                      "content": "Show area",
+                      "id": 1651677015360,
+                      "level": "secondary",
+                      "done": true
+                    }
+                  }
+                ],
                 "todo": {
-                  "content": "Design",
-                  "id": 1651608946008,
-                  "level": "warning",
+                  "content": "Filling",
+                  "id": 1651607892696,
+                  "level": "default",
                   "done": false
                 }
               },
               {
-                "key": 1651608791346,
+                "key": 1651834506061,
                 "children": [],
                 "todo": {
-                  "content": "Fetching images from DB => Imgur",
-                  "id": 1651608791346,
-                  "level": "secondary",
+                  "content": "Picker",
+                  "id": 1651834506061,
+                  "level": "default",
                   "done": false
+                }
+              },
+              {
+                "key": 1651620134116,
+                "children": [],
+                "todo": {
+                  "content": "Key binding",
+                  "id": 1651620134116,
+                  "level": "success",
+                  "done": true
+                }
+              },
+              {
+                "key": 1651609480906,
+                "children": [],
+                "todo": {
+                  "content": "Settings panel for each tool",
+                  "id": 1651609480906,
+                  "level": "success",
+                  "done": true
+                }
+              },
+              {
+                "key": 1651607892696,
+                "children": [
+                  {
+                    "key": 1651607988867,
+                    "children": [],
+                    "todo": {
+                      "content": "Brush size (squad or circle?)",
+                      "id": 1651607892696,
+                      "level": "default",
+                      "done": true
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Pen",
+                  "id": 1651607892696,
+                  "level": "default",
+                  "done": true
+                }
+              },
+              {
+                "key": 1651607931955,
+                "children": [
+                  {
+                    "key": 1651608038244,
+                    "children": [],
+                    "todo": {
+                      "content": "Brush size (squad or circle?)",
+                      "id": 1651607892696,
+                      "level": "default",
+                      "done": true
+                    }
+                  }
+                ],
+                "todo": {
+                  "content": "Eraser",
+                  "id": 1651607892696,
+                  "level": "default",
+                  "done": true
                 }
               }
             ],
             "todo": {
-              "content": "Works list",
-              "id": 1651608772526,
-              "level": "warning",
-              "done": false
-            }
-          },
-          {
-            "key": 1651609723762,
-            "children": [],
-            "todo": {
-              "content": "User system?(idk binding by ip probably easier)",
-              "id": 1651609723762,
+              "content": "Tools",
+              "id": 1651607833633,
               "level": "default",
               "done": false
             }
           }
         ],
         "todo": {
-          "content": "Main page",
-          "id": 1651608755419,
-          "level": "danger",
+          "content": "Editor",
+          "id": 1651607795376,
+          "level": "warning",
           "done": false
         }
       },
@@ -476,7 +527,6 @@
       1651608110666,
       1651608150613,
       1651608097039,
-      1651609065940,
       1651609153045,
       1651608190737,
       1651609251583,
@@ -499,10 +549,13 @@
       1651609955197,
       1651620134116,
       1651608549751,
+      1651609308963,
+      1651607795376,
+      1651607833633,
       1651607933679,
       1651607872394,
-      1651607873728,
-      1651609308963
+      1651686283611,
+      1651608049416
     ],
     "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
     "add_mode": "bottom",

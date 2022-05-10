@@ -60,4 +60,7 @@ export class Point {
     compare(p){
         return (this.x===p.x&&this.y===p.y)
     }
+    log(){
+        console.log(`X:${this._x} ; Y:${this._y}`);
+    }
 }

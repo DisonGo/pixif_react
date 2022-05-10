@@ -11,6 +11,7 @@ import { Tool } from "./Tool.js"
 //     autostart: true
 // }
 const click = new Event("click")
+const mouseover = new Event("mouseover")
 let config = {
     type: Two.Types.svg,
     height: 600,
@@ -24,9 +25,15 @@ function createCanvas(ctx) {
     // tag.id = "mainCan"
     // .appendChild(tag)
     let parent = document.getElementById("editor")
-    ctx.appendTo(parent)
-    ctx.renderer.domElement.style.width = parent.offsetWidth + "px"
-    ctx.renderer.domElement.style.height = parent.offsetWidth + "px"
+    let div = document.createElement("div")
+    parent.appendChild(div)
+    ctx.appendTo(div)
+    let w = parent.offsetWidth + "px"
+    let h = parent.offsetWidth + "px"
+    div.style.width = w
+    div.style.height = h
+    ctx.renderer.domElement.style.width = w
+    ctx.renderer.domElement.style.height = h
     ctx.width = parent.offsetWidth
     ctx.height = parent.offsetWidth
     return ctx.renderer.domElement
@@ -56,6 +63,7 @@ export class Editor {
                 if(this.inRangeOfArray(this.cubes,p.x,p.y)){
                     let cube = this.cubes[p.y][p.x] 
                     cube.elem.dispatchEvent(click)
+                    cube.elem.dispatchEvent(mouseover)
                 }
             }
         })
@@ -68,24 +76,21 @@ export class Editor {
         this.UI = this.viewport.makeGroup()
         this.UI.id = "UI"
         //Cursor
-        {
-            let strokeWidth = 2
-            let cent = new Point(cSize/2,cSize/2)
-            let cursorCube = new Cube(cent,cSize-strokeWidth,this.viewport)
-            cursorCube.svg.noFill()
-            cursorCube.svg.linewidth = strokeWidth
-            cursorCube.svg.stroke = "black"
-            // cursorCube.flicking = setInterval(()=>{
-            //     if(!this.cursor.pressed){
-            //         let s = cursorCube.stroke 
-            //         s === "white"?cursorCube.stroke  = "black":cursorCube.stroke  = "white"
-            //     }
-            // },800)
-            
-            this.cursor = new Cursor(0,0,cSize,cursorCube)
-            this.UI.add(this.cursor.cube.svg)
-            cursorCube.elem.style.pointerEvents = "none";
-        }
+        let cent = new Point(cSize/2,cSize/2)
+        let cursorCube = new Cube(cent,cSize,this.viewport)
+        cursorCube.mode = "preview"
+        cursorCube.svg.noFill()
+        cursorCube.elem.style.pointerEvents = "none"
+        // cursorCube.flicking = setInterval(()=>{
+        //     if(!this.cursor.pressed){
+        //         let s = cursorCube.stroke 
+        //         s === "white"?cursorCube.stroke  = "black":cursorCube.stroke  = "white"
+        //     }
+        // },800)
+        
+        this.cursor = new Cursor(0,0,cSize,cursorCube)
+        this.UI.add(this.cursor.cube.svg)
+        cursorCube.elem.style.pointerEvents = "none";
         //Tools
         this.tools = []
         this.AddTool()
@@ -134,31 +139,49 @@ export class Editor {
         }
         this.cubes = cubes
         this.viewport.update()
+        // Most of event rendering script
+        let details = {}
         this.cubes.forEach((cubes,y)=>{
             cubes.forEach((cube,x)=>{
-                cube.elem.addEventListener("touch",(e)=>{
-                    this.curTool.action(e.detail)
-                })
                 cube.elem.addEventListener("click",(e)=>{
-                    cube.elem.dispatchEvent(new CustomEvent("touch",{detail:{
+                    if(!(this.curTool.onClick instanceof Function)) return;
+                    details = {
                         cube:cube,
                         array:this.cubes,
                         arrayPos:new Point(x,y),                                                                                                   
                         tool:this.curTool
-                    }}))
+                    }
+                    this.curTool.onClick(details)
+                })
+                cube.elem.addEventListener("mouseover",(e)=>{
+                    if(!(this.curTool.onMouseOver instanceof Function)) return;
+                    details = {
+                        cube:cube,
+                        array:this.cubes,
+                        arrayPos:new Point(x,y),                                                                                                   
+                        tool:this.curTool
+                    }
+                    this.curTool.onMouseOver(details)
                 })
             })
         })
+        this.canvas.addEventListener("mouseout",(e)=>{
+            let p = this.CalcArrayPos(e)
+            if(e.target !== this.canvas) return;
+            if(this.inRangeOfArray(this.cubes,p.x,p.y)) return;
+            if(this.curTool.name !== "fill") return;
+            if(!(this.curTool.onMouseOut instanceof Function)) return;
+            details = {
+                array:this.cubes,
+                tool:this.curTool
+            }
+            this.curTool.onMouseOut(details)
+        },true)
         let end =  new Date()
-        console.log(`Start:${start.getTime()}\n`+
-                            `End:${end.getTime()}\n`+        
-                            `Dif:${end.getTime()-start.getTime()}ms`);        
+        console.log(`Editor build time:\t${end.getTime()-start.getTime()}ms`);        
     }
     SetEvent(eventName, func) {
-        this.canvas.addEventListener(eventName, func)
-    }
-    ChangeCube(){
-
+        window.addEventListener(eventName, func)
     }
     AddCube(center,size){
         let cube = new Cube(center,size, this.viewport)
@@ -168,8 +191,9 @@ export class Editor {
         
         return cube
     }
-    AddTool(name,action,onSwitch,color){
-        this.tools.push(new Tool(name,action,onSwitch,color))
+    AddTool(name = "Default",events,color){
+        console.log(`Adding ${name}`);
+        this.tools.push(new Tool(name,events,color))
     }
     SetTool(name){
         let tool = this.tools.find((tool)=>tool.name===name)
@@ -179,10 +203,11 @@ export class Editor {
         else{
             this.curTool = tool
             this.curTool.onSwitch()
+            console.log(`Current tool: ${this.curTool.name}`);
         }
     }
     GetTool(name){
-        return this.tools.find((tool)=>tool.name===name)
+        return this.tools.find((tool)=>tool.name===name) || this.tools[0]
     }
     SetTick(obj, func) {
         obj.tick = func

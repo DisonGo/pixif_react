@@ -1,15 +1,19 @@
 export class Tool{
-    constructor(name="Default",action=()=>{console.log("Default tool did that");},onSwitch=()=>{},color = "white"){
+    constructor(
+        name    = "Default",
+        events  = {onClick:()=>{console.log("Default tool did that")}},
+        color   = "white")
+    {
         this.name = name
-        this.actionFunc = action
-        this.onSwitchFunc = onSwitch
+        this.events = events
+        for (const key in this.events) {
+            const event = this.events[key];
+            this[key] = (data = {})=>{
+                event(data)
+            }
+        }
         this.color = color
-    }
-    action(data={}){
-        this.actionFunc(data)
-    }
-    onSwitch(data={}){
-        this.onSwitchFunc(data)
+        this.preview = true
     }
     setColor(color){
         this.color = color

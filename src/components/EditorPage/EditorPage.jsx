@@ -40,41 +40,45 @@ const ColorSet = { // Набор цветов
 }
 
 let editor = {}
-function editorReady (){
-  return editor instanceof Editor
-}
 class EditorSegment extends Component{
+  constructor(props){
+    super(props)
+    this.state={
+      showPreset:true,
+      editorReady:false
+    }
+  }
   midleSize = 500
   segSizes = {
     left:   (Size.w-this.midleSize)/2,
     midle:  this.midleSize,
     right:  (Size.w-this.midleSize)/2,
   }
-  componentDidMount(){
-    // console.log("Loaded");
-    if(!editorReady()){
-      this.startEditor()
-    }
-  }
-  startEditor(){
+  startEditor=(size=20)=>{
     document.body.style.overflow = "hidden"
-    editor = new Editor(20)
-
+    this.setState({
+      showPreset:false,
+    })
+    editor = new Editor(size)
+    this.setState({
+      editorReady:true
+    })
   }
   render(){
     return(
       <div id='editorPage'style={{height:Size.h}}>
+        <EditorPresetter show={this.state.showPreset} start={this.startEditor} size={this.segSizes.midle}></EditorPresetter>
         <div className="editor-segment" style={{width:this.segSizes.left}} id="left-panel">
           <svg viewBox="0 0 400 50" className='header'>
             <text y="45">Tools</text>
           </svg>
-          <ToolPanel></ToolPanel>
+          <ToolPanel editorReady={this.state.editorReady}></ToolPanel>
         </div>
         <div className="editor-segment" style={{width:this.segSizes.midle}} id="editor">
           <svg viewBox="0 0 400 50" className='header'>
             <text y="45">Editor</text>
           </svg>
-          <ColorPanel></ColorPanel>
+          <ColorPanel editorReady={this.state.editorReady}></ColorPanel>
         </div>
         <div className="editor-segment" style={{width:this.segSizes.right}} id="right-panel">
           <svg viewBox="0 0 400 50" className='header'>
@@ -84,8 +88,22 @@ class EditorSegment extends Component{
       </div>
     )
   }
+  
 }
-
+const EditorPresetter = (props) =>{
+  const sizePresets = [10,20,50]
+  let presets = []
+  sizePresets.forEach(size=>{
+    presets.push(<button key={size} onClick={()=>{props.start(size)}}>{size}px</button>)
+  })
+  //width:props.size,height:props.size,
+  return(
+    <div className='editor-presetter container' style={{display:props.show?"":"none"}}>
+      <h2>Choose pixels size:</h2>
+      <div className="buttons">{presets}</div>
+    </div>
+  )
+}
 class ToolPanel extends Component{
   constructor(props){
     super(props)
@@ -111,128 +129,221 @@ class ToolPanel extends Component{
       details:details
     })
   }
-  penAction     = (data)=> {
-    if(editorReady()){
-      if(data.cube instanceof Cube){
-        let brush = this.ToolSet.pen.settings.getSetting("brushSize")
-        let size = Math.floor(brush.state.value/2),
-            pX = data.arrayPos.x,
-            pY = data.arrayPos.y
-        for(let y = pY - size;y<=pY+size;y++){
-          for(let x = pX - size;x<=pX+size;x++){
-            if(editor.inRangeOfArray(data.array,x,y)){
-              data.array[y][x].fill = data.tool.color
-            }
-          }
+  penOnClick         = (data)=> {
+    if(!this.props.editorReady)return
+    if(!(data.cube instanceof Cube))return
+
+    let brush = this.ToolSet.pen.settings.getSetting("brushSize")
+    let size = Math.floor(brush.state.value/2),
+    pX = data.arrayPos.x,
+        pY = data.arrayPos.y
+    for(let y = pY - size;y<=pY+size;y++){
+      for(let x = pX - size;x<=pX+size;x++){
+        if(editor.inRangeOfArray(data.array,x,y)){
+          data.array[y][x].fill = data.tool.color
+        }
+      }
+    }
+    
+  }
+  eraserOnClick      = (data)=> {
+    if(!this.props.editorReady)return
+    if(!(data.cube instanceof Cube))return
+
+    data.tool.color = "white"
+    let brush = this.ToolSet.eraser.settings.getSetting("eraserSize")
+    let size = Math.floor(brush.state.value/2),
+    pX = data.arrayPos.x,
+    pY = data.arrayPos.y
+    for(let y = pY - size;y<=pY+size;y++){
+      for(let x = pX - size;x<=pX+size;x++){
+        if(editor.inRangeOfArray(data.array,x,y)){
+          data.array[y][x].fill = data.tool.color
         }
       }
     }
   }
-  eraserAction  = (data)=> {
-    if(editorReady()){
-      data.tool.color = "white"
-      if(data.cube instanceof Cube){
-        let brush = this.ToolSet.eraser.settings.getSetting("eraserSize")
-        let size = Math.floor(brush.state.value/2),
-            pX = data.arrayPos.x,
-            pY = data.arrayPos.y
-        for(let y = pY - size;y<=pY+size;y++){
-          for(let x = pX - size;x<=pX+size;x++){
-            if(editor.inRangeOfArray(data.array,x,y)){
-              data.array[y][x].fill = data.tool.color
-            }
-          }
-        }
-      }
-    }
-  }
-  fillAction    = (data)=> {
+  fillOnClick        = (data)=> {
     let baseColor = data.cube.fill
-    function getFourConnectedPoly(x,y){
+    let hardness = Number(this.ToolSet.fill.settings.getSetting("hardness").state.value)
+    function getPoly(x,y){
       let poly = []
-      if(editor.inRangeOfArray(data.array,x-1,y))poly.push({cube:data.array[y][x-1],p: new Point(x-1,y)})
-      if(editor.inRangeOfArray(data.array,x,y-1))poly.push({cube:data.array[y-1][x],p: new Point(x,y-1)})
-      if(editor.inRangeOfArray(data.array,x+1,y))poly.push({cube:data.array[y][x+1],p: new Point(x+1,y)})
-      if(editor.inRangeOfArray(data.array,x,y+1))poly.push({cube:data.array[y+1][x],p: new Point(x,y+1)})
+      function squareCheck(x,y,offset){
+        let squarePoly = []
+        for(  let y1 = y - offset;y1<=y+offset;y1++){
+          for(let x1 = x - offset;x1<=x+offset;x1++){
+            if(editor.inRangeOfArray(data.array,x1,y1)){
+              squarePoly.push({cube:data.array[y1][x1],p:new Point(x1,y1)})
+            }
+          }
+        }
+        return squarePoly
+      }
+      function getFourConnectedPoly(x,y,offset=1){
+        let fourPoly = []
+        if(editor.inRangeOfArray(data.array,x-offset,y))fourPoly.push({cube:data.array[y][x-offset],p: new Point(x-offset,y)})
+        if(editor.inRangeOfArray(data.array,x,y-offset))fourPoly.push({cube:data.array[y-offset][x],p: new Point(x,y-offset)})
+        if(editor.inRangeOfArray(data.array,x+offset,y))fourPoly.push({cube:data.array[y][x+offset],p: new Point(x+offset,y)})
+        if(editor.inRangeOfArray(data.array,x,y+offset))fourPoly.push({cube:data.array[y+offset][x],p: new Point(x,y+offset)})
+        return fourPoly
+      }
+      if(hardness%2===0){
+        poly = squareCheck(x,y,hardness/2)
+      }else{
+        let polyEdge = getFourConnectedPoly(x,y,Math.round(hardness/2))
+        let polyBody = squareCheck(x,y,Math.floor(hardness/2))
+        poly = poly.concat(polyBody,polyEdge)
+      }
       return poly
     }
     function fill(cube,startingPoint){
       cube.fill = data.tool.color
       let x = startingPoint.x,
-          y = startingPoint.y, 
-          poly = getFourConnectedPoly(x,y)
+      y = startingPoint.y, 
+      poly = getPoly(x,y)
       for (const side of poly) {
         if(side.cube.fill === baseColor)fill(side.cube,side.p)
       }
     }
-    if(baseColor!==data.tool.color)fill(data.cube,data.arrayPos)
+    if(baseColor===data.tool.color)return
+    fill(data.cube,data.arrayPos)
+  }
+  strokeOnMouseOver  = (data)=> {
+    if(!this.props.editorReady)return
+    if(!data.tool.preview)return
+    let baseColor = data.cube.fill
+    data.array.forEach(row=>row.forEach(cube=>cube.mode="normal"))
+    let hardness = Number(this.ToolSet.fill.settings.getSetting("hardness").state.value)
+    function getPoly(x,y){
+      let poly = []
+      function squareCheck(x,y,offset){
+        let squarePoly = []
+        for(  let y1 = y - offset;y1<=y+offset;y1++){
+          for(let x1 = x - offset;x1<=x+offset;x1++){
+            if(editor.inRangeOfArray(data.array,x1,y1)){
+              squarePoly.push({cube:data.array[y1][x1],p:new Point(x1,y1)})
+            }
+          }
+        }
+        return squarePoly
+      }
+      function getFourConnectedPoly(x,y,offset=1){
+        let fourPoly = []
+        if(editor.inRangeOfArray(data.array,x-offset,y))fourPoly.push({cube:data.array[y][x-offset],p: new Point(x-offset,y)})
+        if(editor.inRangeOfArray(data.array,x,y-offset))fourPoly.push({cube:data.array[y-offset][x],p: new Point(x,y-offset)})
+        if(editor.inRangeOfArray(data.array,x+offset,y))fourPoly.push({cube:data.array[y][x+offset],p: new Point(x+offset,y)})
+        if(editor.inRangeOfArray(data.array,x,y+offset))fourPoly.push({cube:data.array[y+offset][x],p: new Point(x,y+offset)})
+        return fourPoly
+      }
+      if(hardness%2===0){
+        poly = squareCheck(x,y,hardness/2)
+      }else{
+        let polyEdge = getFourConnectedPoly(x,y,Math.round(hardness/2))
+        let polyBody = squareCheck(x,y,Math.floor(hardness/2))
+        poly = poly.concat(polyBody,polyEdge)
+      }
+      return poly
+    }
+    function stroke(cube,startingPoint){
+      cube.stroke = data.tool.color
+      cube.mode = "preview"
+      let x = startingPoint.x,
+          y = startingPoint.y, 
+          poly = getPoly(x,y)
+      for (const side of poly) {
+        if(side.cube.fill === baseColor && side.cube.stroke !== cube.stroke)stroke(side.cube,side.p)
+      }
+    }
+    if(baseColor!==data.tool.color)stroke(data.cube,data.arrayPos)
+  }
+  unstrokeOnMouseOut = (data)=>{
+    data.array.forEach((arr)=>{
+      arr.forEach((cube)=>{
+        cube.mode = "normal"
+      })
+    })
   }
   ToolSet = {
     pen:{
       name:"pen",
       image: penPic,
-      action:this.penAction,
-      onSwitch:()=>{editor.cursor.cube.stroke = editor.curTool.color},
+      events:{
+        onClick:this.penOnClick,
+        onSwitch:()=>{
+          editor.cursor.cube.stroke = editor.curTool.color
+          this.unstrokeOnMouseOut({array:editor.cubes})
+        }
+      },
       color:ColorSet.black,
       settings:{
-        brushSize:{type:"range",name:"brushSize",baseValue:1,details:{min:1,max:5}}
+        brushSize:{type:"range",name:"brushSize",baseValue:1,details:{min:1,max:5,step:2}}
       },
       key:"p"
     },
     fill:{
       name:"fill",
       image: fillPic,
-      action:this.fillAction,
-      onSwitch:()=>{editor.cursor.cube.stroke = editor.curTool.color},
+      events:{
+        onClick:this.fillOnClick,
+        onMouseOver:this.strokeOnMouseOver,
+        onMouseOut:this.unstrokeOnMouseOut,
+        onSwitch:()=>{editor.cursor.cube.stroke = editor.curTool.color}
+      },
       color:ColorSet.black,
-      settings:{},
+      settings:{
+        hardness:{type:"range",name:"hardness",baseValue:1,details:{min:1,max:10,step:1}}
+      },
       key:"f"
     },
     eraser:{
       name:"eraser",
       image: eraserPic,
-      action:this.eraserAction,
-      onSwitch:()=>{editor.cursor.cube.stroke = "white"},
+      events:{
+        onClick:this.eraserOnClick,
+        onSwitch:()=>{
+          editor.cursor.cube.stroke = "white"
+          this.unstrokeOnMouseOut({array:editor.cubes})
+        }
+      },
       color:"white",
       settings:{
-        eraserSize:{type:"range",name:"eraserSize",baseValue:1,details:{min:1,max:5}}
+        eraserSize:{type:"range",name:"eraserSize",baseValue:1,details:{min:1,max:5,step:2}}
       },
       key:"e"
     }
   }
-  
-  
-  componentDidMount(){
-    if(editorReady()){
-      for (const key in this.ToolSet) {
-        const tool = this.ToolSet[key]
-        console.log(`Adding ${tool.name}`);
-        editor.AddTool(tool.name,tool.action,tool.onSwitch,tool.color)
-        let settings = []
-        for(const key in tool.settings){
-          const set = tool.settings[key]
-          settings.push(this.Setting(set.type,set.name,set.baseValue,set.details))
-        }
-        tool.settings = settings
-        tool.settings.getSetting = (name)=>{
-          return tool.settings.find((a)=>a.name===name)
-        }
-        tool.key = `Key${tool.key.toUpperCase()}`
-        window.addEventListener("keypress",(e)=>{
-          if(e.code === tool.key)this.setTool(tool)
-        })
+  generateTools = () =>{
+    for (const key in this.ToolSet) {
+      const tool = this.ToolSet[key]
+      editor.AddTool(tool.name,tool.events,tool.color)
+      let settings = []
+      for(const key in tool.settings){
+        const set = tool.settings[key]
+        settings.push(this.Setting(set.type,set.name,set.baseValue,set.details))
       }
-      this.setTool(this.ToolSet.pen)
+      tool.settings = settings
+      tool.settings.getSetting = (name)=>tool.settings.find(a=>a.name===name);
+      tool.key = `Key${tool.key.toUpperCase()}`
+      window.addEventListener("keypress",(e)=>{
+        if(e.code === tool.key)this.setTool(tool)
+      })
     }
+    this.setTool(this.ToolSet.pen)
+  }
+  
+  componentDidUpdate(prevP){
+    if(this.props.editorReady === prevP.editorReady) return;
+    if(!this.props.editorReady)return;
+    if(editor.tools.length>1)return;
+    this.generateTools()
     this.setState({curTool:this.state.curTool})
   }
   setTool = (tool) =>{
+    if(!this.props.editorReady)return;
     this.setState({
       curTool:tool
     })
-    if(editorReady()){
-      editor.SetTool(tool.name) 
-    }
+    editor.SetTool(tool.name) 
   }
   render(){
     //Generating tool settings
@@ -241,18 +352,19 @@ class ToolPanel extends Component{
     for (const key in this.ToolSet) {
       const tool = this.ToolSet[key];
       tools.push(<Tool tool={tool} key={tool.name}  ClickHandeler={this.setTool}></Tool>)
-      if(Array.isArray(tool.settings)){
-        const setArr = []
-        tool.settings.forEach(setting => {
-          setArr.push(
-            <div key={setting.name}>
-              <label>{setting.name}:{this.state.states[setting.name].value}</label>
-              <ToolSetting setting={setting}></ToolSetting>
-            </div>
-          )
-        });
-        toolSettings[key] = setArr
-      }
+
+      if(!Array.isArray(tool.settings)) return;
+      const setArr = []
+      tool.settings.forEach(setting => {
+        setArr.push(
+          <div key={setting.name}>
+            <label>{setting.name}:{this.state.states[setting.name].value}</label>
+            <ToolSetting setting={setting}></ToolSetting>
+          </div>
+        )
+      });
+      toolSettings[key] = setArr
+      
     }
     const renderArr = toolSettings[this.state.curTool.name]
     //Generating tools
@@ -270,7 +382,7 @@ class ToolPanel extends Component{
     )  
   }
 }
-function Tool(props){
+const Tool = (props)=>{
   return(
     <div  className="tool" 
           style={{backgroundImage:`url(${props.tool.image})`}}
@@ -285,8 +397,14 @@ const ToolSetting = (props)=>{
         s.state.setValue(e.target.value)
       }
       return(
-        <div className="ToolSetting">
-          <input name={s.name} type="range" min={s.details.min} max={s.details.max} onChange={handleChange} defaultValue={s.state.value} step="2"/>
+        <div className        ="ToolSetting">
+          <input  name        ={s.name} 
+                  type        ="range" 
+                  min         ={s.details.min} 
+                  max         ={s.details.max} 
+                  onChange    ={handleChange} 
+                  defaultValue={s.state.value} 
+                  step        ={s.details.step}/>
         </div>
       )      
     default:
@@ -296,7 +414,6 @@ const ToolSetting = (props)=>{
   }
 }
 class ColorPanel extends Component {
-
   constructor(props){
     super(props)
     this.state = {
@@ -305,18 +422,18 @@ class ColorPanel extends Component {
     
   }
   changeColor = (color)=>{
-    if(editorReady()){
-      this.setState({
-        selectedColor:color
-      })
-      editor.curTool.color = color
-      if(editor.curTool.name!=="eraser")editor.cursor.cube.stroke = color
-      editor.GetTool("pen").color = color
-      editor.GetTool("fill").color = color
-    }
+    if(!this.props.editorReady)return
+    this.setState({
+      selectedColor:color
+    })
+    editor.curTool.color = color
+    if(editor.curTool.name!=="eraser")editor.cursor.cube.stroke = color
+    editor.GetTool("pen").color = color
+    editor.GetTool("fill").color = color
+    editor.cubes.forEach(row=>row.forEach(cube=>cube.stroke = color))
   }
-  
   render() { 
+    if(!this.props.editorReady)return;
     this.colors = []
     for(const color in ColorSet){
       let c = ColorSet[color]
